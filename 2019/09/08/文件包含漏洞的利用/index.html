@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,minimum-scale=1,maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="文件包含漏洞的利用"/>
+
+
+
+
+  <meta name="keywords" content="技术辣鸡的PHP," />
+
+
+
+
+
+  <link rel="alternate" href="/default" title="RuoWeber">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=1.1" />
+
+
+
+<link rel="canonical" href="http://yoursite.com/2019/09/08/文件包含漏洞的利用/"/>
+
+
+<meta name="description" content="文件包含">
+<meta name="keywords" content="技术辣鸡的PHP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="文件包含漏洞的利用">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;09&#x2F;08&#x2F;%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E%E7%9A%84%E5%88%A9%E7%94%A8&#x2F;index.html">
+<meta property="og:site_name" content="RuoWeber">
+<meta property="og:description" content="文件包含">
+<meta property="og:locale" content="zh">
+<meta property="og:updated_time" content="2020-03-05T09:26:38.580Z">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=1.1" />
+<link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet'>
+
+
+
+
+
+<script type="text/javascript">
+  var themeConfig = {
+    fancybox: {
+      enable: false
+    },
+  };
+</script>
+
+
+
+
+  
+
+
+
+    <title> 文件包含漏洞的利用 - RuoWeber </title>
+  </head>
+
+  <body>
+    <div id="page">
+      <header id="masthead"><div class="site-header-inner">
+    <h1 class="site-title">
+        <a href="/." class="logo">RuoWeber</a>
+    </h1>
+
+    <nav id="nav-top">
+        
+            <ul id="menu-top" class="nav-top-items">
+                
+                    <li class="menu-item">
+                        <a href="/archives">
+                            
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li class="menu-item">
+                        <a href="/about">
+                            
+                            
+                                About
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        
+  </nav>
+</div>
+
+      </header>
+      <div id="content">
+        
+    <div id="primary">
+        
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          文件包含漏洞的利用
+        
+      </h1>
+
+      <time class="post-time">
+          Sep 08 2019
+      </time>
+    </header>
+
+
+
+    
+            <div class="post-content">
+            <h1 id="文件包含"><a href="#文件包含" class="headerlink" title="文件包含"></a>文件包含</h1><a id="more"></a>
+
+<h2 id="文件包含伪协议"><a href="#文件包含伪协议" class="headerlink" title="文件包含伪协议"></a>文件包含伪协议</h2><p>。。。</p>
+<h2 id="文件包含自写入的文件"><a href="#文件包含自写入的文件" class="headerlink" title="文件包含自写入的文件"></a>文件包含自写入的文件</h2><h3 id="利用session"><a href="#利用session" class="headerlink" title="利用session"></a>利用session</h3><p>。。。</p>
+<h3 id="利用日志文件-错误访问"><a href="#利用日志文件-错误访问" class="headerlink" title="利用日志文件(错误访问)"></a>利用日志文件(错误访问)</h3><p>。。。</p>
+<h3 id="文件自包含加post"><a href="#文件自包含加post" class="headerlink" title="文件自包含加post"></a>文件自包含加post</h3><p>这里利用PHP的post文件特性，当文件自包含爆栈后，临时文件被保存下来</p>
+<h2 id="phpinfo加包含"><a href="#phpinfo加包含" class="headerlink" title="phpinfo加包含"></a>phpinfo加包含</h2><p>这个是利用上传文件时的临时文件会在phpinfo中加载(当然加载完会被删除),这里利用脚本快速去包含临时文件可以去getshell</p>
+
+            </div>
+          
+
+    
+      <footer class="post-footer">
+		
+		<div class="post-tags">
+		  
+			<a href="/tags/%E6%8A%80%E6%9C%AF%E8%BE%A3%E9%B8%A1%E7%9A%84PHP/">技术辣鸡的PHP</a>
+		  
+		</div>
+		
+
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2019/09/08/Django%E4%BD%8E%E7%89%88%E6%9C%ACRce/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">Django低版本Rce</span>
+        <span class="prev-text nav-mobile">Prev</span>
+      </a>
+    
+    
+      <a class="next" href="/2019/09/08/%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%BC%8F%E6%B4%9E/">
+        <span class="next-text nav-default">格式化字符串漏洞</span>
+        <span class="prev-text nav-mobile">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+        
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+      </footer>
+    
+  </article>
+
+    </div>
+
+      </div>
+
+      <footer id="colophon"><span class="copyright-year">
+    
+        &copy;
+    
+        2014 -
+    
+    2020
+    <span class="footer-author">asy.</span>
+    <span class="power-by">
+        Powered by <a class="hexo-link" href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> and <a class="theme-link" href="https://github.com/frostfan/hexo-theme-polarbear" target="_blank" rel="noopener">Polar Bear</a>
+    </span>
+</span>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+    
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+
+    <script type="text/javascript" src="/js/src/theme.js?v=1.1"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=1.1"></script>
+
+  </body>
+</html>

